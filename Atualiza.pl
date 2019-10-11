@@ -9,7 +9,7 @@ use HTTP::Tiny;
 print "Atualizando tocador de sinal...\n";
 
 #O Proprio
-print "Eu mesmo\n"
+print "Eu mesmo\n";
 $url = "https://raw.githubusercontent.com/MayconQueiroz/Sinal/master/Atualiza.pl";
 $response = HTTP::Tiny->new->get($url);
 
