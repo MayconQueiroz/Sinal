@@ -2,19 +2,49 @@
 
 # Atualizador de arquivos usando codigo hospedado em rede
 # Feito por Maycon Q em 26 de marco de 2019
-use LWP::Simple qw(get);
+use HTTP::Tiny;
 
 #Faz (ou tenta) uma conexao e retorna a pagina
+#Tocador de sinal (Base)
 print "Atualizando tocador de sinal...\n";
-$url = "https://raw.githubusercontent.com/MayconQueiroz/Sinal/master/Escolhe.pl";
-$plF = get $url;
-if (!$plF){
-  print "Falha ao buscar o arquivo no servidor.\nErro: $!";
-  exit;
+
+#O Proprio
+print "Eu mesmo\n"
+$url = "https://raw.githubusercontent.com/MayconQueiroz/Sinal/master/Atualiza.pl";
+$response = HTTP::Tiny->new->get($url);
+
+#So imprime se o resultado der certo
+if ($response->{success}) {
+  $html = $response->{content};
+  open(OT, ">Atualiza.pl") or die "$!"; #Abre arquivo de saida para impressao
+  print OT "$html";
+  close(OT);
 }
-print "Arquivo Recebido...\n";
-open(OT, ">Escolhe.pl") or die "Nao foi possivel abrir o arquivo para atualizacao\n$!"; #Abre arquivo de saida para impressao
-print OT $plF;
-close(OT);
-print "Arquivo Atualizado... Pressione ENTER para sair ";
-<STDIN>;
+
+#Tocador base
+print "Tocador base\n";
+$url = "https://raw.githubusercontent.com/MayconQueiroz/Sinal/master/Escolhe.pl";
+$response = HTTP::Tiny->new->get($url);
+
+#So imprime se o resultado der certo
+if ($response->{success}) {
+  $html = $response->{content};
+  open(OT, ">Escolhe.pl") or die "$!"; #Abre arquivo de saida para impressao
+  print OT "$html";
+  close(OT);
+}
+
+#Tocador de eventos
+print "Tocador de eventos\n";
+$url = "https://raw.githubusercontent.com/MayconQueiroz/Sinal/master/Eventos.pl";
+$response = HTTP::Tiny->new->get($url);
+
+#So imprime se o resultado der certo
+if ($response->{success}) {
+  $html = $response->{content};
+  open(OT, ">Eventos.pl") or die "$!"; #Abre arquivo de saida para impressao
+  print OT "$html";
+  close(OT);
+}
+
+print "Arquivos Atualizados";
