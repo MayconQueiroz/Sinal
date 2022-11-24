@@ -108,6 +108,34 @@ if($Sem == 46){
   exit;
 }
 
+#Le o arquivo de quantas vezes foi tocado
+open(IIN, "<QtdVzs.txt") or die "$!"; #Abre arquivo de saida para impressao
+$K = <IIN>;
+$R = 1; #Multiplicador para reiniciar a contagem
+if ($K > 600 && $Au == 0){ #Troca o sinal se for a primeira aula (pra nao dar confusão) e se o sinal anterior ja tiver tocado 600 vezes (20 sinais por dia, 30 dias)
+  #Verifica se tem arquivos na pasta de exemplares
+  @files = glob("Exemplares\\*");
+  $Tfiles = @files;
+  print "$Tfiles em estoque\n";
+
+  #Se nao tiverem, traz os arquivos da pasta usados e tenta de novo
+  if ($Tfiles == 0){
+    system("move /Y Usados\\*.* Exemplares\\"); #Move o novo pra cá
+    @files = glob("Exemplares\\*");
+    $Tfiles = @files;
+    print "2ndo $Tfiles em estoque\n";
+  }
+  system("move /Y Sinal.mp3 Usados\\Sinal-$year-$Sem-$mday-$min-$sec.mp3"); #Copia o arquivo pra usados
+
+  #Com todos os arquivos nas maos, sorteia um, leva o daqui pra pasta de usados e traz o de la pra ca
+  system("move /Y ".$files[rand($Tfiles)]." Sinal.mp3"); #Move o novo pra cá
+  $R = 0;
+}
+close(IIN);
+open(IIN, ">QtdVzs.txt") or die "$!"; #Abre arquivo de saida para impressao
+$K = ($K + 1) * $R;
+print IIN "$K"; 
+
 ## Tratamento geral
 print "Semana Normal\n";
 print OT "Sinal.wav";
